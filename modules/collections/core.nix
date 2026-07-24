@@ -4,7 +4,7 @@
     { pkgs, config, ... }:
     {
       imports = [
-        ../../options.nix # brings `username` into NixOS scope — keep first
+        ../options.nix # brings `username` into NixOS scope — keep first
       ]
       ++ (with self.nixosModules; [
         home

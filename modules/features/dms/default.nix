@@ -10,33 +10,35 @@
   flake.nixosModules.dms =
     { config, ... }:
     {
-      imports = [ inputs.dms.homeModules.dank-material-shell ];
+      home-manager.users.${config.username} = {
+        imports = [ inputs.dms.homeModules.dank-material-shell ];
 
-      home-manager.users.${config.username}.programs.dank-material-shell = {
-        enable = true;
-        systemd.enable = true; # auto-start via systemd user service
+        programs.dank-material-shell = {
+          enable = true;
+          systemd.enable = true; # auto-start via systemd user service
 
-        enableSystemMonitoring = true; # system monitoring widgets (dgop)
-        enableDynamicTheming = true; # wallpaper-based theming (matugen)
-        enableAudioWavelength = true; # audio visualizer (cava)
+          enableSystemMonitoring = true; # system monitoring widgets (dgop)
+          enableDynamicTheming = true; # wallpaper-based theming (matugen)
+          enableAudioWavelength = true; # audio visualizer (cava)
 
-        settings = {
-          theme = "dark";
-          dynamicTheming = true;
-        };
+          settings = {
+            theme = "dark";
+            dynamicTheming = true;
+          };
 
-        session = {
-          isLightMode = false;
-        };
+          session = {
+            isLightMode = false;
+          };
 
-        clipboardSettings = {
-          maxHistory = 25;
-          maxEntrySize = 5242880; # 5 MB
-          autoClearDays = 1;
-          clearAtStartup = true;
-          disabled = false;
-          disableHistory = false;
-          disablePersist = true;
+          clipboardSettings = {
+            maxHistory = 25;
+            maxEntrySize = 5242880; # 5 MB
+            autoClearDays = 1;
+            clearAtStartup = true;
+            disabled = false;
+            disableHistory = false;
+            disablePersist = true;
+          };
         };
       };
     };

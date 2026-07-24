@@ -1,45 +1,44 @@
-{ pkgs, ... }:
+{ self, inputs, ... }:
 {
-  flake.nixosModules.basic-utils = {
-    environment.systemPackages = with pkgs; [
-      # Clipboard (essential for Wayland)
-      wl-clipboard
+  flake.nixosModules.basic-utils =
+    { pkgs, config, ... }:
+    {
+      environment.systemPackages = with pkgs; [
+        # Clipboard (essential for Wayland)
+        wl-clipboard
 
-      # Screenshot tools (niri has binds for these)
-      grim # screenshot tool
-      slurp # region selector
+        # Screenshot tools (niri has binds for these)
+        grim
+        slurp
 
-      # File manager
-      thunar
-      thunar-archive-plugin
-      file-roller # archive manager
+        # File manager
+        thunar
+        thunar-archive-plugin
+        file-roller
 
-      # Image viewer
-      imv
+        # Image viewer
+        imv
 
-      # Document viewer
-      zathara
+        # Text editor (fallback)
+        nano
 
-      # Text editor (fallback)
-      nano
+        # System monitor
+        btop
 
-      # System monitor
-      btop
+        # Archive tools
+        unzip
+        p7zip
 
-      # Archive tools
-      unzip
-      p7zip
+        # Network tools
+        curl
+        wget
+        dnsutils
 
-      # Network tools
-      curl
-      wget
-      dnsutils
+        # Disk usage
+        ncdu
 
-      # Disk usage
-      ncdu
-
-      # Process viewer
-      htop
-    ];
-  };
+        # Process viewer
+        htop
+      ];
+    };
 }
