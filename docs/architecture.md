@@ -17,7 +17,17 @@ src/
     ├── dev.nix               #   devShell + formatter (perSystem)
     ├── checks.nix            #   flake checks: host builds + QEMU VM boot test
     ├── _template.nix         #   skeleton for new modules (skipped by import-tree)
-    ├── system/               #   infrastructure: home, sops, nh, pipewire, fonts, nvidia, flatpak
+    ├── system/               #   infrastructure, subcategorized:
+    │   ├── audio/             #     pipewire
+    │   ├── boot/              #     bootloader (systemd-boot)
+    │   ├── drivers/           #     nvidia, nvidia-prime
+    │   ├── flatpak/           #     flatpak service
+    │   ├── fonts/             #     system fonts
+    │   ├── home/              #     home-manager wiring
+    │   ├── network/           #     networkmanager, bluetooth, ssh
+    │   ├── nh/                #     nh CLI helper + nh clean
+    │   ├── power/             #     laptop power management
+    │   └── sops/              #     secrets wiring
     ├── features/             #   one folder per program: zellij, fish, git, zed, alacritty, niri, …
     │   └── flatpak/          #   flatpak apps: discord, spotify, easyeffects
     ├── collections/          #   bundles: core, development, gaming

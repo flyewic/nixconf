@@ -9,15 +9,12 @@
         niri
         librewolf
         discord
+        nvidia-prime
         power
         laptopHardware
       ];
 
       networking.hostName = "laptop";
-
-      boot.loader.systemd-boot.enable = true;
-      boot.loader.efi.canTouchEfiVariables = true;
-
       system.stateVersion = "26.05";
     };
 }

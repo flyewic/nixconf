@@ -14,9 +14,11 @@
         cli-tools
         git
         nh
+        network
         bluetooth
         ssh
         basic-utils
+        boot
       ]);
 
       nix.settings.experimental-features = [
@@ -40,7 +42,6 @@
         ];
       };
 
-      networking.networkmanager.enable = true;
       time.timeZone = "UTC"; # TODO: set your local timezone
       i18n.defaultLocale = "en_US.UTF-8";
       console.keyMap = "us";
