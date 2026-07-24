@@ -1,9 +1,22 @@
-# Ignore build outputs from performing a nix-build or `nix build` command
+# Nix build outputs
 result
 result-*
 
-# Ignore automatically generated direnv output
-.direnv
+# direnv
+.direnv/
 
-# Ignore NixOS interactive test driver history
+# NixOS interactive test driver history
 **/.nixos-test-history
+
+# Editor files
+*.swp
+*~
+.#*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Secrets (encrypted files are tracked, but ignore common patterns)
+# *.age
+# *.sops.*
