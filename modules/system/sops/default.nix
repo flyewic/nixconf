@@ -10,10 +10,9 @@
         age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
         gnupg.sshKeyPaths = [ ]; # skip gnupg probing
 
-        # Example (uncomment once secrets/secrets.yaml is encrypted):
-        # secrets."flye/password".neededForUsers = true;
-        # then: users.users.${config.username}.hashedPasswordFile =
-        #   config.sops.secrets."flye/password".path;
+        secrets."flye/password" = {
+          neededForUsers = true; # decrypt before user accounts are created
+        };
       };
     };
 }

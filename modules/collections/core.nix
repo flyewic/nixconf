@@ -36,6 +36,7 @@
 
       users.users.${config.username} = {
         isNormalUser = true;
+        hashedPasswordFile = config.sops.secrets."flye/password".path;
         extraGroups = [
           "wheel"
           "networkmanager"

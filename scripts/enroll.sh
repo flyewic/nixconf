@@ -122,9 +122,10 @@ setup_sops() {
 
     if [ ! -f secrets/secrets.yaml ]; then
         cat > /tmp/secrets-init.yaml << 'YAML'
-# Secrets for the nixconf flake.
-# Add your secrets here. Example:
-#   user-password: <hash from mkpasswd -m sha-512>
+# Password hash for user flye. Generate with:
+#   mkpasswd -m sha-512
+flye:
+    password: CHANGE_ME
 YAML
         sops --encrypt /tmp/secrets-init.yaml > secrets/secrets.yaml
         rm /tmp/secrets-init.yaml
@@ -163,11 +164,18 @@ case "$MODE" in
         echo ""
         echo "══ Enrollment complete for '$HOST' ══"
         echo ""
-        echo "  Next steps:"
-        echo "    1. Add secrets:        sops secrets/secrets.yaml"
-        echo "    2. Generate password:  mkpasswd -m sha-512"
-        echo "    3. First switch:       sudo nixos-rebuild switch --flake .#$HOST"
+        echo "  ― BEFORE REBUILDING ―"
+        echo "    Set your password hash in secrets/secrets.yaml:"
         echo ""
-        echo "  After first switch, use: just switch"
+        echo "      mkpasswd -m sha-512"
+        echo "      sops secrets/secrets.yaml   # replace CHANGE_ME with the hash"
+        echo ""
+        echo "    If you skip this step, the flye account will have NO valid"
+        echo "    password and you cannot log in after the first switch."
+        echo ""
+        echo "  First switch:"
+        echo "    sudo nixos-rebuild switch --flake .#$HOST"
+        echo ""
+        echo "  After first switch, use:  just switch"
         ;;
 esac
