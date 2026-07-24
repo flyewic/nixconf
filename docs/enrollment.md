@@ -3,6 +3,40 @@
 Step-by-step guide for deploying this NixOS config to a new machine from
 scratch. Written from hard-won experience.
 
+## Fast path (recommended)
+
+After cloning the repo and installing the minimal NixOS:
+
+```bash
+cd nixconf
+sudo nix-shell -p git              # if git isn't available yet (first boot after nixos-install)
+```
+
+Every step — hardware config, sops keys, flake lock — is automated:
+
+```bash
+just enroll laptop     # or desktop, or any host name
+```
+
+Then add secrets and switch:
+
+```bash
+sops secrets/secrets.yaml          # add your password hash (mkpasswd -m sha-512)
+sudo nixos-rebuild switch --flake .#laptop
+```
+
+From then on: `just switch`.
+
+`just enroll` does three things:
+1. Runs `nixos-generate-config` and wraps it in the flake-parts module format
+2. Creates `~/.config/sops/age/keys.txt` from your SSH key, fills in `.sops.yaml`, creates an encrypted `secrets/secrets.yaml`
+3. Runs `nix flake lock`
+
+## Manual enrollment (reference)
+
+The steps below are what `just enroll` automates. Read them if something
+goes wrong or you want to understand each step.
+
 ## Prerequisites
 
 - NixOS installer USB (https://nixos.org/download.html)

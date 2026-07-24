@@ -6,6 +6,18 @@ host := `hostname`
 default:
     @just --list
 
+# Enroll a new machine (first-time setup: hw config + sops keys + flake lock)
+enroll host:
+    @./scripts/enroll.sh {{host}}
+
+# Only generate + wrap the hardware config for a host
+hw host:
+    @./scripts/enroll.sh {{host}} --hw-only
+
+# Only set up sops keys (age identity + .sops.yaml + encrypted secrets file)
+sops-init:
+    @./scripts/enroll.sh --sops-only
+
 # Format all nix files
 fmt:
     nix fmt
