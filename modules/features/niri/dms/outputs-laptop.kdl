@@ -1,0 +1,9 @@
+// Per-host output configuration for laptop
+// Run `dms setup outputs` to regenerate for your exact hardware.
+
+output "eDP-1" {
+    scale 1
+    layout {
+        always-center-single-column
+    }
+}

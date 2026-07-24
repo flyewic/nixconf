@@ -9,8 +9,7 @@
           settings = {
             user = {
               name = "flye";
-              # TODO: set your GitHub noreply email (format: {ID}+{username}@users.noreply.github.com)
-              email = "flye@example.com";
+              email = "flyewic@gmail.com";
             };
             core = {
               autocrlf = "input";

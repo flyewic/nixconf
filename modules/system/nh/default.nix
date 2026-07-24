@@ -7,9 +7,7 @@
     {
       programs.nh = {
         enable = true;
-        # Default flake for `nh os switch` etc. (exported as NH_FLAKE).
-        # TODO: adjust to wherever this repo lives on the machine.
-        flake = "/home/${config.username}/Projects/new-nix/src";
+        flake = "/home/${config.username}/nixconf";
         clean = {
           enable = true;
           extraArgs = "--keep-since 7d --keep 5";
