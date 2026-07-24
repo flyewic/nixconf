@@ -1,3 +1,5 @@
 {
-  systems = [ "x86_64-linux" ];
+  config = {
+    systems = [ "x86_64-linux" ];
+  };
 }

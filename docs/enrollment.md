@@ -250,19 +250,26 @@ niri session
 
 ### 12.3 Verify DMS (DankMaterialShell)
 
-DMS should auto-start with niri. Verify it's running:
+DMS auto-starts via its systemd user service. Verify it's running:
 
 ```bash
 # Check if DMS is running
-pgrep -f "quickshell.*dms"
+systemctl --user status dms.service
 
 # Check DMS logs
 journalctl --user -u dms.service -f
+
+# If keys don't work, regenerate DMS config files:
+dms setup
 ```
 
+DMS files under `~/.config/niri/dms/` are auto-generated — if you change DMS
+settings or add plugins, run `dms setup` to regenerate binds, colors, layout,
+etc. The config ships with pre-generated copies so it works on first boot.
+
 If DMS isn't starting, check:
-- `programs.dank-material-shell.enable = true` is set in your config
-- `niri.enableSpawn = true` is configured (auto-starts with niri)
+- `programs.dank-material-shell.enable = true` is set in `modules/features/dms/default.nix`
+- `systemd.enable = true` is set (auto-starts via user systemd service)
 - The dms flake input is properly locked (`nix flake lock`)
 
 ### 12.4 Install Additional Flatpaks
