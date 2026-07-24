@@ -1,12 +1,20 @@
-# Recipients — fill in before encrypting anything. Derive with:
-#   admin:   ssh-to-age < ~/.ssh/id_ed25519.pub
-#   host:    ssh-to-age < /etc/ssh/ssh_host_ed25519_key.pub   (run on the host,
-#            or: ssh root@<host> "ssh-to-age < /etc/ssh/ssh_host_ed25519_key.pub")
+# Recipients — fill in before encrypting anything.
+#
+# Derive your admin key (run once):
+#   ssh-to-age < ~/.ssh/id_ed25519.pub
+#
+# Derive host keys (run on each machine after first boot):
+#   ssh-to-age < /etc/ssh/ssh_host_ed25519_key.pub
+#
+# Start with admin-only. Add host keys after each machine is running
+# (then uncomment them in the creation rule below).
 keys:
   - &admin age1_REPLACE_ME
-  - &desktop age1_REPLACE_ME
-  - &laptop age1_REPLACE_ME
+  # - &desktop age1_REPLACE_ME
+  # - &laptop age1_REPLACE_ME
 
 creation_rules:
   - path_regex: secrets/secrets\.yaml$
-    age: [*admin, *desktop, *laptop]
+    age: [*admin]
+    # After adding host keys above, uncomment them here:
+    # age: [*admin, *desktop, *laptop]
