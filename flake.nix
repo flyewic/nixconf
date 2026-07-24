@@ -18,6 +18,12 @@
     };
 
     nix-flatpak.url = "github:gmodena/nix-flatpak";
+
+    # DankMaterialShell - Desktop shell for niri
+    dms = {
+      url = "github:AvengeMedia/DankMaterialShell/stable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);

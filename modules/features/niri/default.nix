@@ -11,6 +11,7 @@
         pipewire
         fonts
         alacritty
+        dms  # DankMaterialShell integration
       ];
 
       programs.niri.enable = true;

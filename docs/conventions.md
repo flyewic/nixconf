@@ -7,11 +7,17 @@ Rules for working in `src/`. Follow these and the config stays dendritic.
 1. **Every file under `modules/` is a flake-parts module.** It is auto-imported
    by import-tree; never add manual `imports` of module files by path at the
    flake level. (Exception: anything under a path component starting with `_`
-   is skipped — use `_assets/`, `_files/` etc. for non-module data.)
-2. **One folder per package/concern**, `modules/<name>/default.nix`, registering
-   exactly one `flake.nixosModules.<name>`. Folder name == registered name.
-   Supporting files (configs, layouts, scripts) live in the same folder and are
-   referenced relatively (`./config.kdl`).
+   is skipped — `modules/_template.nix` uses this so it can hold placeholders.)
+2. **Modules are categorized by directory:**
+   - `modules/features/<name>/` — one folder per program (zellij, git, niri…)
+   - `modules/system/<name>/` — infrastructure (home, sops, pipewire, nvidia…)
+   - `modules/collections/` — bundles that import other modules by name
+   - `modules/hosts/` — the machines
+
+   Each registers exactly one `flake.nixosModules.<name>`; folder name ==
+   registered name. Supporting files (configs, layouts, scripts) live in the
+   same folder and are referenced relatively (`./config.kdl`).
+   Scaffold new feature modules from `modules/_template.nix`.
 3. **Compose by name, never by path.** Hosts and collections consume modules
    with `imports = with self.nixosModules; [ ... ];`. The only legal path import
    is `../../options.nix` (the dual-scope options file).
@@ -36,18 +42,19 @@ Rules for working in `src/`. Follow these and the config stays dendritic.
   their own module (`niri` imports `[ pipewire fonts alacritty ]`), so hosts
   subscribe to one name and get the whole subtree.
 - `system.stateVersion` is set per host; `home.stateVersion` only in
-  `modules/home/default.nix`. Don't repeat either elsewhere.
+  `modules/system/home/default.nix`. Don't repeat either elsewhere.
 
 ## Recipes
 
 ### Add a new package module
 
 ```sh
-mkdir modules/mypackage
+mkdir modules/features/mypackage
+cp modules/_template.nix modules/features/mypackage/default.nix
 ```
 
 ```nix
-# modules/mypackage/default.nix
+# modules/features/mypackage/default.nix
 { self, inputs, ... }:
 {
   flake.nixosModules.mypackage = { pkgs, config, ... }: {
@@ -71,7 +78,7 @@ home-manager.users.${config.username}.xdg.configFile."mypackage/config.toml".sou
 ```
 
 This is also the fallback when home-manager has **no** typed module for the
-program — e.g. `modules/niri/` ships a native `config.kdl` this way (verified:
+program — e.g. `modules/features/niri/` ships a native `config.kdl` this way (verified:
 no `programs.niri` in HM master). Check first; if HM later gains a module you
 can migrate to typed options.
 
@@ -110,10 +117,11 @@ Full workflow and per-host/per-service scoping: [secrets.md](secrets.md).
 
 ### Add a flatpak
 
-Flatpaks are one module per app under `modules/flatpak/`. Add a new file:
+Flatpaks are one module per app under `modules/features/flatpak/` (the support
+module lives at `modules/system/flatpak/`). Add a new file:
 
 ```nix
-# modules/flatpak/slack.nix
+# modules/features/flatpak/slack.nix
 { self, ... }:
 {
   flake.nixosModules.slack = {
@@ -161,5 +169,5 @@ if a feature module already sets the same option.
   until a secret is declared, so the placeholder is safe — but encrypt it
   before adding real values (the file is git-tracked).
 - **`secrets/` and `.sops.yaml` live at the flake root**, not under `modules/`,
-  so import-tree never touches them. `modules/sops/default.nix` references them
-  via `../../`.
+  so import-tree never touches them. `modules/system/sops/default.nix` references them
+  via `../../../`.

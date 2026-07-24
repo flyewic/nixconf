@@ -14,6 +14,9 @@
         cli-tools
         git
         nh
+        bluetooth
+        ssh
+        basic-utils
       ]);
 
       nix.settings.experimental-features = [

@@ -37,6 +37,7 @@ mechanism — there are no manual `imports` lists tying the tree together.
 | [implementation-plan.md](implementation-plan.md) | Ordered build checklist, per-file specs, verification, bootstrap.  |
 | [conventions.md](conventions.md)               | Rules of the repo + recipes (add a module, host, secret, flatpak…).  |
 | [secrets.md](secrets.md)                       | Full sops-nix + age workflow: setup, editing, consuming, bootstrap.  |
+| [enrollment.md](enrollment.md)                 | Step-by-step guide for deploying to a new device from scratch.       |
 | [tooling.md](tooling.md)                       | just recipes, flake checks, QEMU VM tests, extending validation.     |
 | [templates.md](templates.md)                   | Copy-paste skeletons for every file type in the config.              |
 

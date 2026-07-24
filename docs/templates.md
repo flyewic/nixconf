@@ -76,7 +76,7 @@ follow.
 }
 ```
 
-## §4 `modules/home/default.nix`
+## §4 `modules/system/home/default.nix`
 
 ```nix
 { inputs, ... }:
@@ -101,7 +101,7 @@ follow.
 }
 ```
 
-## §5 `modules/sops/default.nix`
+## §5 `modules/system/sops/default.nix`
 
 ```nix
 { inputs, ... }:
@@ -110,7 +110,7 @@ follow.
     imports = [ inputs.sops-nix.nixosModules.sops ];
 
     sops = {
-      defaultSopsFile = ../../secrets/secrets.yaml;
+      defaultSopsFile = ../../../secrets/secrets.yaml;
       age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
       gnupg.sshKeyPaths = [ ];
 
@@ -126,8 +126,11 @@ follow.
 
 ### Empty skeleton
 
+Also available as `modules/_template.nix` in the repo — import-tree skips
+`_`-prefixed paths, so it can contain placeholders without breaking evaluation.
+
 ```nix
-# modules/<name>/default.nix
+# modules/features/<name>/default.nix
 { self, inputs, ... }:
 {
   flake.nixosModules.<name> =
@@ -142,7 +145,7 @@ follow.
 }
 ```
 
-### Filled example — `modules/zellij/default.nix`
+### Filled example — `modules/features/zellij/default.nix`
 
 ```nix
 { self, inputs, ... }:
@@ -168,7 +171,7 @@ follow.
 ```
 
 ```kdl
-// modules/zellij/layouts/dev.kdl
+// modules/features/zellij/layouts/dev.kdl
 layout {
     pane split_direction="vertical" {
         pane
@@ -183,7 +186,7 @@ layout {
 }
 ```
 
-### Filled example — `modules/fish/default.nix`
+### Filled example — `modules/features/fish/default.nix`
 
 ```nix
 { self, inputs, ... }:
@@ -205,7 +208,7 @@ layout {
 }
 ```
 
-### Filled example — `modules/niri/default.nix` (feature importing features, native config file)
+### Filled example — `modules/features/niri/default.nix` (feature importing features, native config file)
 
 Note: HM has **no** niri module (verified against HM master), so the user
 config is a native `config.kdl` shipped from the module folder:
@@ -238,7 +241,7 @@ config is a native `config.kdl` shipped from the module folder:
 ```
 
 ```kdl
-// modules/niri/config.kdl — starter snippet
+// modules/features/niri/config.kdl — starter snippet
 layout {
     gaps 16
 }
@@ -249,7 +252,7 @@ binds {
 }
 ```
 
-### Filled example — `modules/nh/default.nix` (NixOS-only module)
+### Filled example — `modules/system/nh/default.nix` (NixOS-only module)
 
 ```nix
 { ... }:
@@ -272,12 +275,12 @@ binds {
 }
 ```
 
-### Flatpak modules — `modules/flatpak/`
+### Flatpak modules — `modules/system/flatpak/` + `modules/features/flatpak/`
 
 Support module (imported automatically by every app module):
 
 ```nix
-# modules/flatpak/default.nix
+# modules/system/flatpak/default.nix
 { inputs, ... }:
 {
   flake.nixosModules.flatpak = {
@@ -304,7 +307,7 @@ Support module (imported automatically by every app module):
 One module per app — hosts subscribe à la carte:
 
 ```nix
-# modules/flatpak/discord.nix
+# modules/features/flatpak/discord.nix
 { self, ... }:
 {
   flake.nixosModules.discord = {
@@ -313,8 +316,8 @@ One module per app — hosts subscribe à la carte:
   };
 }
 
-# modules/flatpak/spotify.nix   → com.spotify.Client
-# modules/flatpak/easyeffects.nix → com.github.wwmm.easyeffects
+# modules/features/flatpak/spotify.nix   → com.spotify.Client
+# modules/features/flatpak/easyeffects.nix → com.github.wwmm.easyeffects
 ```
 
 ### Collection — `modules/collections/development.nix`

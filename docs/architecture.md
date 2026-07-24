@@ -16,17 +16,12 @@ src/
     ├── options.nix           #   shared values (dual-scope, see below)
     ├── dev.nix               #   devShell + formatter (perSystem)
     ├── checks.nix            #   flake checks: host builds + QEMU VM boot test
-    ├── home/default.nix      #   nixosModules.home       (home-manager wiring)
-    ├── sops/default.nix      #   nixosModules.sops       (secrets wiring)
-    ├── <feature>/default.nix #   nixosModules.<feature>  (one folder per package)
-    ├── flatpak/              #   nixosModules.flatpak (support) + one module per app
-    ├── collections/
-    │   ├── core.nix          #   nixosModules.core        (baseline bundle)
-    │   ├── development.nix   #   nixosModules.development
-    │   └── gaming.nix        #   nixosModules.gaming
-    └── hosts/
-        ├── desktop/{default,configuration,hardware-configuration}.nix
-        └── laptop/{default,configuration,hardware-configuration}.nix
+    ├── _template.nix         #   skeleton for new modules (skipped by import-tree)
+    ├── system/               #   infrastructure: home, sops, nh, pipewire, fonts, nvidia, flatpak
+    ├── features/             #   one folder per program: zellij, fish, git, zed, alacritty, niri, …
+    │   └── flatpak/          #   flatpak apps: discord, spotify, easyeffects
+    ├── collections/          #   bundles: core, development, gaming
+    └── hosts/                #   desktop/ + laptop/ (3 files each, see below)
 ```
 
 The entire flake `outputs` is one line:
@@ -47,7 +42,7 @@ job is to register things into flake outputs — almost always a named NixOS
 module under `flake.nixosModules.<name>` (inner layer):
 
 ```nix
-# modules/zellij/default.nix
+# modules/features/zellij/default.nix
 { self, inputs, ... }:                    # ← flake-parts scope (args: self, inputs, config, lib, ...)
 {
   flake.nixosModules.zellij =             # ← the registered name (must match the folder name)
@@ -72,8 +67,11 @@ errors — check the function head.
 
 Nothing is imported by path between modules. Instead:
 
-- **Feature modules** register `flake.nixosModules.<name>`. One folder per
-  package/concern, folder name == registered name.
+- **Feature modules** (`modules/features/<name>/`) register
+  `flake.nixosModules.<name>`. One folder per program, folder name ==
+  registered name.
+- **System modules** (`modules/system/<name>/`) are the same shape for
+  infrastructure concerns (home-manager wiring, secrets, audio, drivers).
 - **Collections** (`modules/collections/*.nix`) are feature modules whose whole
   content is `imports = with self.nixosModules; [ ... ];` — named bundles.
 - **Hosts** (`modules/hosts/<host>/`) compose collections and features:
@@ -122,7 +120,7 @@ Note: `nixosSystem` is **not** given `system =`; instead
 ## Embedded home-manager
 
 home-manager is a NixOS module, not a standalone flake output. Wiring lives in
-exactly one place, `modules/home/default.nix`:
+exactly one place, `modules/system/home/default.nix`:
 
 ```nix
 { inputs, ... }:
@@ -188,7 +186,7 @@ sops-nix, with **age identities derived from each host's SSH host key**
 - `.sops.yaml` at the flake root lists recipients: one **admin** key (derived
   from flye's personal SSH key, used to edit secrets) plus one key **per host**
   (so each machine can decrypt).
-- `modules/sops/default.nix` imports `sops-nix`, sets
+- `modules/system/sops/default.nix` imports `sops-nix`, sets
   `sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ]` and
   `sops.defaultSopsFile = ../../secrets/secrets.yaml`.
 - Feature modules declare secrets with `sops.secrets.<name> = { ... };` and
@@ -203,8 +201,8 @@ Declarative via the `nix-flatpak` input, and split like everything else — a
 **support module** plus **one module per app**:
 
 ```
-modules/flatpak/
-├── default.nix        # nixosModules.flatpak — nix-flatpak import, service, flathub remote
+modules/system/flatpak/default.nix   # nixosModules.flatpak — nix-flatpak import, service, flathub remote
+modules/features/flatpak/
 ├── discord.nix        # nixosModules.discord — services.flatpak.packages += Discord
 ├── spotify.nix        # nixosModules.spotify
 └── easyeffects.nix    # nixosModules.easyeffects

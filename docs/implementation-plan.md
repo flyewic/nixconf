@@ -31,22 +31,24 @@ Full code: templates.md §1.
 
 ## Phase 2 — Wiring modules
 
-- [x] `modules/home/default.nix` — registers `nixosModules.home`: imports
+- [x] `modules/system/home/default.nix` — registers `nixosModules.home`: imports
       `inputs.home-manager.nixosModules.home-manager`, sets `useGlobalPkgs`,
       `useUserPackages`, `backupFileExtension = "hm-backup"`, and the
       `home-manager.users.${config.username}` baseline (`home.stateVersion = "26.05"`)
       (templates.md §4)
-- [x] `modules/sops/default.nix` — registers `nixosModules.sops`: imports
+- [x] `modules/system/sops/default.nix` — registers `nixosModules.sops`: imports
       `inputs.sops-nix.nixosModules.sops`, sets
       `age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ]`,
-      `gnupg.sshKeyPaths = [ ]`, `defaultSopsFile = ../../secrets/secrets.yaml`
+      `gnupg.sshKeyPaths = [ ]`, `defaultSopsFile = ../../../secrets/secrets.yaml`
       (templates.md §5)
 
 ## Phase 3 — Feature modules
 
-One folder each under `modules/`; folder name == registered name. Each is a
-flake-parts module registering `flake.nixosModules.<name>`; user-level config
-goes under `home-manager.users.${config.username}` in the same file.
+One folder per program under `modules/features/` (infrastructure modules like
+`nh`, `pipewire`, `fonts`, `nvidia`, flatpak support live under
+`modules/system/`); folder name == registered name. Each is a flake-parts
+module registering `flake.nixosModules.<name>`; user-level config goes under
+`home-manager.users.${config.username}` in the same file.
 
 - [x] `fish/` — NixOS `programs.fish.enable = true`;
       `users.users.${config.username}.shell = pkgs.fish;` HM `programs.fish`
@@ -82,13 +84,13 @@ goes under `home-manager.users.${config.username}` in the same file.
       `nix-direnv.enable = true`
 - [x] `flatpak/` — **support module + one module per app** (flatpaks are à la
       carte, hosts subscribe to individual apps):
-  - `flatpak/default.nix` → `nixosModules.flatpak`: imports
+  - `system/flatpak/default.nix` → `nixosModules.flatpak`: imports
     `inputs.nix-flatpak.nixosModules.nix-flatpak`, `services.flatpak.enable`,
     flathub remote, `uninstallUnmanaged = true`, weekly auto-update
-  - `flatpak/discord.nix` → `nixosModules.discord`:
+  - `features/flatpak/discord.nix` → `nixosModules.discord`:
     `imports = [ self.nixosModules.flatpak ]; services.flatpak.packages = [ "com.discordapp.Discord" ];`
-  - `flatpak/spotify.nix` → `nixosModules.spotify`: `com.spotify.Client`
-  - `flatpak/easyeffects.nix` → `nixosModules.easyeffects`: `com.github.wwmm.easyeffects`
+  - `features/flatpak/spotify.nix` → `nixosModules.spotify`: `com.spotify.Client`
+  - `features/flatpak/easyeffects.nix` → `nixosModules.easyeffects`: `com.github.wwmm.easyeffects`
 - [x] `nvidia/` — `services.xserver.videoDrivers = [ "nvidia" ]`,
       `hardware.nvidia` (`modesetting.enable`, `open = true`,
       `package = config.boot.kernelPackages.nvidiaPackages.production`),
@@ -135,7 +137,7 @@ For each of `desktop` and `laptop` (templates.md §7):
 - [x] `src/secrets/secrets.yaml` — plaintext placeholder with a header comment:
       *encrypt with `sops secrets/secrets.yaml` after filling in `.sops.yaml`,
       before declaring any `sops.secrets.*`*. One example key, commented out.
-- [x] One commented consumption example in `modules/sops/default.nix`
+- [x] One commented consumption example in `modules/system/sops/default.nix`
       (`sops.secrets."flye/password"` + `hashedPasswordFile`)
 
 ## Phase 7 — Tooling & validation

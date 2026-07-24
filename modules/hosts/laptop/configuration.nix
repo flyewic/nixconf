@@ -9,6 +9,7 @@
         niri
         librewolf
         discord
+        power
         laptopHardware
       ];
 

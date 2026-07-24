@@ -12,7 +12,7 @@ End-to-end secrets workflow for this config.
   SSH key**.
 - `.sops.yaml` at the flake root controls *which recipients can decrypt which
   files* (creation rules). sops-nix wires decryption into NixOS via
-  `modules/sops/default.nix`.
+  `modules/system/sops/default.nix`.
 
 ## One-time setup
 
@@ -165,11 +165,11 @@ key and repeat steps 2–3.
 
 - `.sops.yaml` — recipients + creation rules (flake root)
 - `secrets/secrets.yaml` — the shared encrypted file
-- `modules/sops/default.nix` — imports `inputs.sops-nix.nixosModules.sops`, sets:
+- `modules/system/sops/default.nix` — imports `inputs.sops-nix.nixosModules.sops`, sets:
 
 ```nix
 sops = {
-  defaultSopsFile = ../../secrets/secrets.yaml;
+  defaultSopsFile = ../../../secrets/secrets.yaml;
   age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   gnupg.sshKeyPaths = [ ]; # skip gnupg probing
 };
