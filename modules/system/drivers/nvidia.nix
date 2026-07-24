@@ -8,7 +8,7 @@
       hardware.nvidia = {
         modesetting.enable = true;
         open = true;
-        package = config.boot.kernelPackages.nvidiaPackages.stable;
+        package = config.boot.kernelPackages.nvidiaPackages.latest;
       };
     };
 }

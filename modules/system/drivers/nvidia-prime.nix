@@ -14,6 +14,7 @@
       modesetting.enable = true;
       open = false; # proprietary driver: better suspend/resume for laptops
       nvidiaSettings = true;
+      package = config.boot.kernelPackages.nvidiaPackages.latest;
 
       powerManagement.enable = true;
       powerManagement.finegrained = true; # runtime D3 power saving
